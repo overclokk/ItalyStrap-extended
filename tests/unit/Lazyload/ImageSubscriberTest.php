@@ -36,7 +36,7 @@ class ImageSubscriberTest extends UnitTestCase
     public function itShouldExecuteInit()
     {
 
-        $this->config->get(Argument::any(), false)->willReturn(false);
+        $this->configReal->get(Argument::any(), false)->willReturn(false);
 
         $this->dispatcher->addListener(
             Argument::type('string'),

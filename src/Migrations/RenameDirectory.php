@@ -1,21 +1,9 @@
 <?php
 
-/**
- * Rename directory APi
- *
- * This class handle the renaming of directories
- *
- * @link www.italystrap.it
- * @since 4.0.0
- *
- * @package ItalyStrap
- */
+declare(strict_types=1);
 
 namespace ItalyStrap\Migrations;
 
-/**
- * Rename_Directory Class.
- */
 class RenameDirectory
 {
     /**
@@ -38,8 +26,9 @@ class RenameDirectory
      * @param string $new_parent_dir The name and path of the new directory.
      *
      * @return bool                          Return true if success.
+     * @throws \ErrorException
      */
-    public function rename(string $old_parent_dir, string $new_parent_dir)
+    public function rename(string $old_parent_dir, string $new_parent_dir): bool
     {
 
         // if ( ! is_dir( $old_parent_dir ) ) {
@@ -48,11 +37,11 @@ class RenameDirectory
 
         if (is_dir($new_parent_dir)) {
             echo "The parent already renamed!";
-            return;
+            return false;
         }
 
-        if (! is_writable($old_parent_dir)) {
-            throw new ErrorException('La cartella non è scrivibile.');
+        if (!is_writable($old_parent_dir)) {
+            throw new \ErrorException('La cartella non è scrivibile.');
         }
 
         $renamed = rename($old_parent_dir, $new_parent_dir);
