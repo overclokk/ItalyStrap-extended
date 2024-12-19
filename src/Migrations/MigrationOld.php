@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ItalyStrap\Migrations;
 
-class ParentThemeMigrations
+class MigrationOld
 {
     private ?RenameDirectory $rename = null;
     private ?Update_File $update = null;
@@ -18,28 +18,41 @@ class ParentThemeMigrations
     public function run()
     {
 
-        printf(
+        \printf(
             '<h2>%s</h2><p>%s</p><p>Option template name: %s</p><p>Option stylesheet name: %s</p>',
-            __('Migration page for ItalyStrap theme framework', 'italystrap'),
-            __('Before upgrading to new version of the ItalyStrap theme framework (4.x) you need to migrate the old settings and rename the old directory of the theme to the new format "italystrap", update the style.css in your child theme to point to the correct parent directory and update the option "template" to the new format name.<br>To do so you can use the below migrate button.<br>Make a backup of all files and database before migration and than click on "Migrate" button, this will run the migration functionality.', 'italystrap'),
-            esc_attr(get_option('template')),
-            esc_attr(get_option('stylesheet'))
+            \__('Migration page for ItalyStrap theme framework', 'italystrap'),
+            \__('Before upgrading to new version of the ItalyStrap theme framework (4.x) you need to migrate the old settings and rename the old directory of the theme to the new format "italystrap", update the style.css in your child theme to point to the correct parent directory and update the option "template" to the new format name.<br>To do so you can use the below migrate button.<br>Make a backup of all files and database before migration and than click on "Migrate" button, this will run the migration functionality.', 'italystrap'),
+            \esc_attr(\get_option('template')),
+            \esc_attr(\get_option('stylesheet'))
         );
 
-        echo "<h3>Directory founded</h3>";
+        echo "<h3>Themes founded</h3>";
 
-        foreach (search_theme_directories() as $key => $value) {
+        foreach ((array)search_theme_directories() as $key => $value) {
             echo "<pre>";
             print_r($key);
+            echo PHP_EOL;
+            print_r($value);
             echo "</pre>";
         }
+//        wp_maintenance();
 
-        if (! isset($_POST['submit'])) {
-            return null;
-        }
+//        if (! isset($_POST['submit'])) {
+//            return null;
+//        }
+//        $old_data = (array) get_option('italystrap_theme_settings');
+//        \d($old_data);
+//
+//
+//        $new_options = get_option('italystrap_settings');
+//        \d($new_options);
 
-        $this->convert_data();
-        $this->upgrade_parent();
+
+
+        // activate maintenance mode with wordpress function
+
+//        $this->convert_data();
+//        $this->upgrade_parent();
     }
 
     /**
@@ -51,7 +64,8 @@ class ParentThemeMigrations
         $settings_converter = new SettingsMigration();
 
 
-        $old_data = (array) get_option('italystrap_theme_settings');
+        $old_data = (array)get_option('italystrap_theme_settings');
+
         $pattern = [
             // 'old'    => 'new',
             'default_404'   => 'default_404',
@@ -61,11 +75,15 @@ class ParentThemeMigrations
         $settings_converter->dataToThemeMod($pattern, $old_data);
 
 
-        $pattern = ['favicon'       => 'site_icon'];
+        $pattern = [
+            'favicon'       => 'site_icon'
+        ];
         $settings_converter->dataToOption($pattern, $old_data);
 
 
-        $pattern = ['analytics'     => 'google_analytics_id'];
+        $pattern = [
+            'analytics'     => 'google_analytics_id'
+        ];
         $new_options = get_option('italystrap_settings');
 
         $settings_converter->dataToOptions($pattern, $old_data, $new_options, 'italystrap_settings');
@@ -110,6 +128,7 @@ class ParentThemeMigrations
          */
         $this->rename->rename($old_parent_dir, $new_parent_dir);
 
+        //\switch_theme();
         /**
          * Then update option 'template'
          */

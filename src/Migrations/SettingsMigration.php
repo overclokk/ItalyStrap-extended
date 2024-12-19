@@ -6,15 +6,6 @@ namespace ItalyStrap\Migrations;
 
 class SettingsMigration
 {
-    private array $data = [];
-    private array $pattern;
-
-    public function __construct(array $pattern = [], array $data = [])
-    {
-        $this->data = $data;
-        $this->pattern = $pattern;
-    }
-
     /**
      * Puts an option to theme_mod.
      *
@@ -25,13 +16,12 @@ class SettingsMigration
      */
     public function dataToThemeMod(array $pattern, array $data)
     {
-
         foreach ($pattern as $old_key => $new_key) {
             if (get_theme_mod($new_key)) {
                 continue;
             }
 
-            if (! isset($data[ $old_key ])) {
+            if (!isset($data[$old_key])) {
                 continue;
             }
 
@@ -60,12 +50,12 @@ class SettingsMigration
                 continue;
             }
 
-            if (! isset($data[ $old_key ])) {
+            if (!isset($data[$old_key])) {
                 continue;
             }
 
-            if (preg_match('#png|jpg|gif#is', $data[ $old_key ])) {
-                update_option($new_key, $this->getImageIdFromUrl($data[ $old_key ]));
+            if (preg_match('#png|jpg|gif#is', $data[$old_key])) {
+                update_option($new_key, $this->getImageIdFromUrl($data[$old_key]));
                 continue;
             }
 
@@ -86,30 +76,30 @@ class SettingsMigration
     public function dataToOptions(array $pattern, array $data, $options, $option_name)
     {
 
-        if (! is_array($options)) {
+        if (!is_array($options)) {
             $options = [];
         }
 
         foreach ($pattern as $old_key => $new_key) {
-            $options[ $new_key ] = null;
+            $options[$new_key] = null;
 
-            if (! empty($options[ $new_key ])) {
+            if (!empty($options[$new_key])) {
                 continue;
             }
 
-            if (! isset($data[ $old_key ])) {
+            if (! isset($data[$old_key])) {
                 continue;
             }
 
-            if (preg_match('#png|jpg|gif#is', $data[ $old_key ])) {
-                $options[ $new_key ] = $this->getImageIdFromUrl($data[ $old_key ]);
-                update_option($option_name, $options);
+            if (preg_match('#png|jpg|gif#is', $data[$old_key])) {
+                $options[ $new_key ] = $this->getImageIdFromUrl($data[$old_key]);
                 continue;
             }
 
-            $options[ $new_key ] = $data[ $old_key ];
-            update_option($option_name, $options);
+            $options[$new_key] = $data[$old_key];
         }
+
+        update_option($option_name, $options);
     }
 
     /**

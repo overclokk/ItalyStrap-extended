@@ -117,16 +117,16 @@ $settings->addPage(
 );
 
 // Migration page
-//$settings->addPage(
-//    [
-//      Page::PARENT        => 'italystrap-dashboard',
-//      Page::PAGE_TITLE    => __('Migrations', 'italystrap'),
-//      Page::MENU_TITLE    => __('Migrations', 'italystrap'),
-//      Page::SLUG          => 'italystrap-migrations',
-//      Page::VIEW          => ITALYSTRAP_PLUGIN_PATH . '/admin/view/italystrap-migrations.php',
-//    'show_on'           => \strpos(get_option('template'), 'ItalyStrap') !== false,
-//    ]
-//);
+$settings->addPage(
+    [
+        Page::PARENT        => 'italystrap-dashboard',
+        Page::PAGE_TITLE    => __('Migrations', 'italystrap'),
+        Page::MENU_TITLE    => __('Migrations', 'italystrap'),
+        Page::SLUG          => 'italystrap-migrations',
+        Page::VIEW          => ITALYSTRAP_PLUGIN_PATH . '/admin/view/italystrap-migrations.php',
+        'show_on'           => \strpos((string)get_option('template'), 'ItalyStrap') !== false,
+    ]
+);
 
 $settings->addCustomPluginLink(
     'key-for-css',

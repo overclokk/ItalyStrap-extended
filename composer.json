@@ -15,19 +15,23 @@
     "minimum-stability": "stable",
 	"require": {
 		"php": ">=7.4",
+		"italystrap/breadcrumbs": "^2.0",
+		"italystrap/config": "^2.6",
 		"italystrap/empress": "^1.0",
 		"italystrap/event": "dev-master",
 		"italystrap/edd": "^0.0",
-		"italystrap/breadcrumbs": "^2.0",
-		"italystrap/settings": "dev-master",
 		"italystrap/fields": "^2.0",
 		"italystrap/helpers": "^1.0",
 		"italystrap/platform-requirements-check": "dev-master",
+		"italystrap/settings": "dev-master",
+		"italystrap/storage": "^1.0",
+
 		"mobiledetect/mobiledetectlib": "^2.8",
 		"cmb2/cmb2": "2.6.0",
 		"rdlowrey/auryn": "^1.4",
 		"erusev/parsedown": "^1.6",
-		"inpsyde/menu-cache": "^1.0"
+		"inpsyde/menu-cache": "^1.0",
+		"webimpress/safe-writer": "~2.1.0"
 	},
 	"require-dev": {
 		"lucatume/wp-browser": "^3.1",
@@ -49,7 +53,7 @@
 		"vimeo/psalm": "^5.7",
 		"phpbench/phpbench": "@dev",
 		"phpmetrics/phpmetrics": "^2.5",
-		"italystrap/debug": "^2.1",
+		"italystrap/debug": "dev-master",
 		"leafo/scssphp": "^0.6",
 		"rector/rector": "^0.17.7",
 		"franzl/studio": "^0.16.0"
@@ -67,7 +71,8 @@
 		"psr-4": {
 			"ItalyStrap\\Tests\\": "tests/src",
 			"ItalyStrap\\Tests\\Unit\\": "tests/unit",
-			"ItalyStrap\\Tests\\Integration\\": "tests/integration"
+			"ItalyStrap\\Tests\\Integration\\": "tests/integration",
+			"ItalyStrap\\Tests\\Functional\\": "tests/functional"
 		}
 	},
 	"extra": {
@@ -91,6 +96,9 @@
 		"integration": [
 			"@php vendor/bin/codecept run integration"
 		],
+		"functional": [
+			"@php vendor/bin/codecept run functional"
+		],
 		"infection": [
 			"@php vendor/bin/infection --threads=4"
 		],
@@ -105,6 +113,12 @@
 		],
 		"insights": [
 			"vendor/bin/phpinsights"
+		],
+		"qa": [
+			"@cs",
+			"@unit",
+			"@integration",
+			"@functional"
 		]
 	},
 	"support"    : {
@@ -115,7 +129,8 @@
 		"allow-plugins": {
 			"codeception/c3": true,
 			"dealerdirect/phpcodesniffer-composer-installer": true,
-			"franzl/studio": true
+			"franzl/studio": true,
+			"ocramius/package-versions": true
 		}
 	}
 }

@@ -13,10 +13,10 @@ class ImageSubscriberTest extends IntegrationTestCase
     private function getInstance()
     {
         $sut = new ImageSubscriber(
-            $this->getConfig(),
-            $this->getDispatcher(),
-            $this->getFile(),
-            $this->getImage()
+            $this->makeConfig(),
+            $this->makeDispatcher(),
+            $this->makeFile(),
+            $this->makeImage()
         );
         $this->assertInstanceOf(ImageSubscriber::class, $sut, '');
         return $sut;

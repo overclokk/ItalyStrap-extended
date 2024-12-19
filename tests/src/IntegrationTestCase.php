@@ -7,9 +7,11 @@ namespace ItalyStrap\Tests;
 use Codeception\TestCase\WPTestCase;
 use DOMDocument;
 use ItalyStrap\Config\Config;
+use ItalyStrap\Config\ConfigInterface;
 use ItalyStrap\Event\EventDispatcher;
 use ItalyStrap\Event\EventDispatcherInterface;
 use ItalyStrap\Lazyload\Image;
+use ItalyStrap\Storage\StoreInterface;
 use ItalyStrap\Update\Validation;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -19,58 +21,49 @@ class IntegrationTestCase extends WPTestCase
 {
     use ProphecyTrait;
 
-    protected $tester;
+    protected \IntegrationTester $tester;
 
-    /**
-     * @var DOMDocument
-     */
-    private $dom;
+    private \DOMDocument $dom;
+    private Validation $validation;
 
-    /**
-     * @var ObjectProphecy
-     */
-    private $file;
+    private Image $image;
 
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var EventDispatcher
-     */
-    private $dispatcher;
-
-    private $image;
-
-    public function getImage(): Image
+    public function makeImage(): Image
     {
         return $this->image;
     }
 
-    /**
-     * @return SplFileObject
-     */
-    public function getFile(): SplFileObject
+    private ObjectProphecy $file;
+
+    public function makeFile(): SplFileObject
     {
         return $this->file->reveal();
     }
 
-    /**
-     * @return EventDispatcherInterface
-     */
-    public function getDispatcher(): EventDispatcherInterface
+    private EventDispatcherInterface $dispatcher;
+
+    public function makeDispatcher(): EventDispatcherInterface
     {
         return $this->dispatcher;
     }
 
-    /**
-     * @return Config
-     */
-    public function getConfig(): Config
+    private ConfigInterface $config;
+
+    public function makeConfig(): ConfigInterface
     {
         return $this->config;
     }
+
+    protected StoreInterface $store;
+
+    public function makeStore(): StoreInterface
+    {
+        return $this->store;
+    }
+
+    protected string $imageUrlOne;
+    protected string $imageUrlTwo;
+    protected string $imageUrlThree;
 
     public function setUp(): void
     {
@@ -84,6 +77,28 @@ class IntegrationTestCase extends WPTestCase
         $this->dispatcher = new EventDispatcher();
         $this->file = $this->prophesize(SplFileObject::class);
         $this->image = new Image($this->config, $this->dispatcher);
+
+        $domain = \defined('WP_TESTS_DOMAIN') ? WP_TESTS_DOMAIN : 'example.org';
+
+        $this->imageUrlOne = "http://{$domain}/wp-content/uploads/2013/03/featured-image-horizontal.jpg";
+        $this->imageUrlTwo = "http://$domain/wp-content/uploads/2013/03/unicorn-wallpaper.jpg";
+        $this->imageUrlThree = "http://$domain/wp-content/uploads/2015/08/26-wordpress-512.png";
+
+        $this->factory()->attachment->create_object(
+            [
+                'guid' => $this->imageUrlOne,
+            ]
+        );
+        $this->tester->factory()->attachment->create_object(
+            [
+                'guid' => $this->imageUrlTwo,
+            ]
+        );
+        $this->tester->factory()->attachment->create_object(
+            [
+                'guid' => $this->imageUrlThree,
+            ]
+        );
     }
 
     public function tearDown(): void

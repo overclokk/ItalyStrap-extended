@@ -14,8 +14,10 @@ class SettingsConverterTest extends IntegrationTestCase
         return new SettingsMigration();
     }
 
-    public function it_should_be_converted_to_theme_mod()
+    public function testItShouldBeConvertedToThemeMod()
     {
+        $sut = $this->makeInstance();
+
         $pattern = [
             // 'old'    => 'new',
             'default_404'   => 'default_404',
@@ -23,78 +25,65 @@ class SettingsConverterTest extends IntegrationTestCase
             'logo'          => 'logo',
         ];
 
-        /**
-         * The img will be converted to ID
-         */
-        $old_data = ['default_404'      => 'http://192.168.1.10/italystrap/wp-content/uploads/2013/03/featured-image-horizontal.jpg', 'default_image'    => 'http://192.168.1.10/italystrap/wp-content/uploads/2013/03/unicorn-wallpaper.jpg', 'logo'             => 'http://192.168.1.10/italystrap/wp-content/uploads/2015/08/26-wordpress-512.png'];
+        $old_data = [
+            'default_404'      => $this->imageUrlOne,
+            'default_image'    => $this->imageUrlTwo,
+            'logo'             => $this->imageUrlThree
+        ];
 
-        $this->makeInstance()->dataToThemeMod($pattern, $old_data);
+        $sut->dataToThemeMod($pattern, $old_data);
 
         foreach ($pattern as $key => $value) {
-            $this->assertTrue(null !== get_theme_mod($value), get_theme_mod($value));
+            $this->assertTrue(\is_int(get_theme_mod($value)), 'Should be the ID of the image');
+            $file = \get_post(get_theme_mod($value));
+            $this->assertSame($old_data[$key], $file->guid);
         }
     }
 
-    /**
-     * @test
-     */
-    public function it_should_be_converted_to_option()
+    public function testItShouldBeConvertedToOption()
     {
-        $pattern = ['favicon'       => 'site_icon'];
+        $sut = $this->makeInstance();
 
-        /**
-         * The img will be converted to ID
-         */
-        $old_data = ['favicon'      => 'http://192.168.1.10/italystrap/wp-content/uploads/2013/03/featured-image-horizontal.jpg'];
+        $pattern = [
+            'favicon'       => 'site_icon'
+        ];
 
-        $this->makeInstance()->dataToOption($pattern, $old_data);
+        $old_data = [
+            'favicon'      => $this->imageUrlOne
+        ];
+
+        $sut->dataToOption($pattern, $old_data);
 
         foreach ($pattern as $key => $value) {
-            $this->assertTrue(null !== get_option($value), get_option($value));
+            $this->assertTrue(\is_int(get_option($value)), 'Should be the ID of the image');
+            $file = \get_post(get_option($value));
+            $this->assertSame($old_data[$key], $file->guid);
         }
     }
 
-    /**
-     * @test
-     */
-    public function it_should_return_integer()
+    public function testItShouldBeConvertedToOptions()
     {
-        $pattern = ['favicon'       => 'site_icon'];
+        $sut = $this->makeInstance();
+
+        $pattern = [
+            'analytics'     => 'google_analytics_id'
+        ];
 
         /**
          * The img will be converted to ID
          */
-        $old_data = ['favicon'      => 'http://192.168.1.10/italystrap/wp-content/uploads/2013/03/featured-image-horizontal.jpg'];
-
-        $this->makeInstance()->dataToOption($pattern, $old_data);
-        $this->makeInstance()->dataToThemeMod($pattern, $old_data);
-
-        foreach ($pattern as $key => $value) {
-            $this->assertTrue(is_numeric(get_option($value)), 'Value: ' . get_option($value));
-            $this->assertTrue(is_numeric(get_theme_mod($value)), 'Value: ' . get_theme_mod($value));
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_be_converted_to_options()
-    {
-        $pattern = ['analytics'     => 'google_analytics_id'];
-
-        /**
-         * The img will be converted to ID
-         */
-        $old_data = ['analytics'    => 'UA-12345-6'];
+        $old_data = [
+            'analytics'    => 'UA-12345-6'
+        ];
 
         $new_options = get_option('italystrap_settings');
 
-        $this->makeInstance()->dataToOptions($pattern, $old_data, $new_options, 'italystrap_settings');
+        $sut->dataToOptions($pattern, $old_data, $new_options, 'italystrap_settings');
 
-        $options = get_option('italystrap_settings');
+        $new_data = get_option('italystrap_settings');
 
         foreach ($pattern as $key => $value) {
-            $this->assertEquals($old_data[ $key ], $options[ $value ], $options[ $value ]);
+            $this->assertEquals($old_data[$key], $new_data[$value], 'Should be the ID of the image');
         }
     }
 }
